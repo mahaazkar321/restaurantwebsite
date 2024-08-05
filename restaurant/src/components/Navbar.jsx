@@ -1,12 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/images/logo.png";
 import { cart } from "../Data";
-import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ onSearch }) => {
   const navbarRef = useRef();
   const searchRef = useRef();
   const cartRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();  // Using useNavigate for navigation
 
   const navbarHandler = () => {
     navbarRef.current.classList.toggle("active");
@@ -25,22 +27,25 @@ const Navbar = () => {
     searchRef.current.classList.remove("active");
     navbarRef.current.classList.remove("active");
   };
- 
+
+  const handleSearch = () => {
+    onSearch(searchQuery);
+    navigate("/menu"); // Redirect to the menu page after searching
+  };
 
   return (
     <>
       <header className="header">
-        <a href="#" className="logo">
+        <Link to="/" className="logo">
           <img src={Logo} alt="Logo" />
-        </a>
+        </Link>
         <nav className="navbar" ref={navbarRef}>
-          <a href="/home">home</a>
-          <a href="/about">about</a>
-          <a href="/menu">menu</a>
-          
-          <a href="/review">review</a>
-          <a href="/contact">contact</a>
-          <a href="/blogs">blogs</a>
+          <Link to="/home">home</Link>
+          <Link to="/about">about</Link>
+          <Link to="/menu">menu</Link>
+          <Link to="/review">review</Link>
+          <Link to="/contact">contact</Link>
+          <Link to="/blogs">blogs</Link>
         </nav>
         <div className="icons">
           <div
@@ -60,8 +65,14 @@ const Navbar = () => {
           ></div>
         </div>
         <div className="search-form" ref={searchRef}>
-          <input type="search" id="search-box" placeholder="search here..." />
-          <label htmlFor="search-box" className="fas fa-search"></label>
+          <input
+            type="search"
+            id="search-box"
+            placeholder="search here..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <label htmlFor="search-box" className="fas fa-search" onClick={handleSearch}></label>
         </div>
         <div className="cart-items-container" ref={cartRef}>
           {cart.map((item, index) => (
